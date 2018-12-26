@@ -1,6 +1,7 @@
 USE_PHP=1
 USE_ZLIB=0
 BASEDIR=.
+DIFFERENT=0
 
 CC=gcc
 LDFLAGS=-O2
@@ -19,7 +20,7 @@ respond.o: error.o images.o text.o
 	$(CC) -o $@ -c src/respond.c -D USE_PHP=$(USE_PHP)
 
 main.o: respond.o
-	$(CC) -o $@ -c src/main.c -D BASEDIR=$(BASEDIR)
+	$(CC) -o $@ -c src/main.c -D BASEDIR=$(BASEDIR) -D DIFFERENT=$(DIFFERENT)
 
 error.o:
 	$(CC) -o $@ -c src/workers/error.c

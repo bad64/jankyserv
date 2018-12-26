@@ -13,7 +13,7 @@ At any rate, PHP is a soft(-ish) dependency. You can make it without PHP support
 What works:
 
 - Serving HTML/CSS
-- Serving PHP/CSS
+- Serving PHP/CSS (slow and needs to be rewritten)
 - Serving error pages (only 403, 404, 500 and 501 are implemented)
 
 What does not work yet:

@@ -1,36 +1,108 @@
 #include "includes.h"
 
-void error(char* msg)
-{
-	perror(msg);
-	exit(1);
-}
-
 int main(int argc, char const *argv[]) 
-{ 
+{
+	//Check if args are ok
 	if (argc != 2)
 	{
          printf("ERROR: Please provide a port number to listen on\n");	//If we have no port, we print this and exit
 		 exit(1);
     }
 	
-	//Ugly ASCII banner
-	printf("\
-NMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN\n\
-MMy::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::yMM\n\
-MMo       ``````      ``     ``    `  ``    `` ``     ``    ````   ```````   ````    ``      ``  oMM\n\
-MMo      .mmmMMN-  -sNMM-  /mMN  :mM/+Nn mhNmy.Mm  -odMmdhNmddmm. +NNmmmmd`:mMmmMMo /Mm   :sNN+  oMM\n\
-MMo        :mMs`-smN  Md -dMyNM.hMh+mMMNho:`   hMhNms/``mMmho`  :mMMmdd+ .hMMmdNmy- mM+-sNNs:    oMM\n\
-MMo  /o//odMh/smNmmmmMM/yMd- NMMd+hMh-hM/    `sMm/. :+///odMN/.hMMsoo:.`sMm/-hM:   /MMmNs:       oMM\n\
-MMo  :oso+:` +o:`   `o+-o/   +o/ :o:  `oo`   .o+    /ossso+:` :oooooo. .o+`  :o-   -oo:          oMM\n\
-MMo                                                                                        v0.1a oMM\n\
-MMy::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::yMM\n\
-NMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN"\
-	);
-	printf("\n\n");
+	//Check if a base directory has been configured during compilation
+	#ifndef BASEDIR
+		#define BASEDIR .
+	#endif
 	
-	chdir("html");
+	//Change working directory to basedir if it is not the current working directory
+	char *basedir = STR(BASEDIR);
+	
+	if (strcmp(basedir, ".") == 0)
+	{
+		if (chdir("html") != 0)
+		{
+			switch (errno)
+			{
+				case ENOENT:
+					if (mkdir("html", 0755) != 0)
+					{
+						perror("Cannot create html directory");
+						exit(1);
+					}
+					else
+					{
+						printf("Created html directory\n");
+						chdir("html");
+					}
+					break;
+				case ENOTDIR:
+					printf("A file named \"html\" is present in the server directory. The server cannot run without a html folder to pull pages from. Exiting.\n");
+					exit(1);
+					break;
+				case EACCES:
+					perror("Could not access html folder");
+					exit(1);
+					break;
+			}
+		}
+	}
+	else
+	{
+		if (chdir(basedir) != 0)
+		{
+			switch (errno)
+			{
+				char *errmsg;
+				case ENOENT:
+					if (mkdir(basedir, 0755) != 0)
+					{
+						errmsg = (char *)malloc( (strlen("Cannot create server directory at ") + strlen(basedir)) * sizeof(char));
+						memset(errmsg, '\0', sizeof(errmsg));
+						strcat(errmsg, "Cannot create server directory at ");
+						strcat(errmsg, basedir);
+						
+						perror(errmsg);
+						exit(1);
+					}
+					else
+					{
+						printf("Created server directory at %s\n", basedir);
+						chdir(basedir);
+					}
+					break;
+				case ENOTDIR:
+					printf("%s is not a folder. The server cannot start without a folder to pull pages from. Exiting.\n", basedir);
+					exit(1);
+					break;
+				case EACCES:
+					errmsg = (char *)malloc( (strlen("Could not access directory at ") + strlen(basedir)) * sizeof(char));
+					memset(errmsg, '\0', sizeof(errmsg));
+					strcat(errmsg, "Could not access directory at ");
+					strcat(errmsg, basedir);
+					
+					perror(errmsg);
+					exit(1);
+					break;
+			}
+		}
+	}
+	
+	//Ugly ASCII banner
+	printf("╔═══════════════════════════════════════════════════════════════════════════════════╗\n");
+	printf("║                                                                                   ║\n");
+	printf("║   ██████████ ████████ ███    ██ ██  ██ ██    ██ ██████ ██████ ██████   ██    ██   ║\n");
+	printf("║           ██ ██    ██ ████   ██ ██ ██   ██  ██  ██     ██     ██    ██ ██    ██   ║\n");
+	printf("║           ██ ██    ██ ██ ██  ██ ████     ████   ██     ██     ██    ██  ██  ██    ║\n");
+	printf("║          ███ █████ ██ ██  ██ ██ ███       ██    ██████ ████   ██████    ██  ██    ║\n");
+	printf("║          ███ ██    ██ ██   ████ ████      ██        ██ ██     ██  ██     ████     ║\n");
+	printf("║   ██    ████ ██    ██ ██    ███ ██ ██     ██        ██ ██     ██   ██    ████     ║\n");
+	printf("║   ██████████ ██    ██ ██     ██ ██  ██    ██    ██████ ██████ ██    ██    ██      ║\n");
+	printf("║                                                                                   ║\n");
+	printf("╚═══════════════════════════════════════════════════════════════════════════════════╝"\");
+	printf("\n\n");
 
+	
+	//Actually starting the server stuff
     int sockfd, newsockfd;									//File descriptors for sockets 
 	int port = (int)strtol(argv[1], 0, 10);					//Self explanatory, passed via args
 	int clilen;												//Length of client address. Required by the accept() system call
@@ -45,15 +117,20 @@ NMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 	//Open socket
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockfd < 0) 
-		error("Cannot open socket");
+	{
+		perror("Cannot open socket");
+		exit(1);
+	}
 	
 	//Bind socket
 	if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
-		error("Binding failed");
+	{
+		perror("Binding failed");
+	}
 	
 	//Now we can listen
 	listen(sockfd, 5);
-	printf("Listening...\n");
+	printf("Listening on port %s...\n", argv[1]);
 	
 	//And when we get a connection...
 	clilen = sizeof(cli_addr);
@@ -65,7 +142,7 @@ NMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 			printf("Could not accept client connection from %s", inet_ntoa(cli_addr.sin_addr));
 		else
 		{
-			printf("-----------------------\n");
+			printf("=========================\n");
 			printf("Connection accepted from %s\n", inet_ntoa(cli_addr.sin_addr));
 
 			if ( fork() == 0)

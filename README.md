@@ -10,21 +10,25 @@ At any rate, PHP is a soft(-ish) dependency, in the sense that there is no defau
 
 # TODO
 
-What has been tested:
+What works:
 
 - Serving HTML/CSS
 - Serving PHP/CSS
-- Serving (PHP-based) error pages
+- Serving error pages (partially implemented)
+
+What does not work yet:
+
+- Serving basically anything that is not text
 
 What has not been tested:
 
-- Serving any sort of content other than plaintext
 - All of the above on an actual Linux install (it's been mostly tested on WSL)
 
 What has not been implemented:
 
 - Logging
-- Generally better error handling
+- gzip response compression
 - JSON/XML responses
 - Routing
 - Decent multithreading support
+- Support for uploads

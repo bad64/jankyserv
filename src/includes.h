@@ -1,7 +1,8 @@
+#include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h> 
@@ -9,19 +10,37 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include <signal.h>
+//Compile-time options
+#ifndef USE_PHP
+#define USE_PHP 1
+#endif
 
-typedef struct Message Message;
-struct Message
-{
-	int length;
-	char *content;
-};
+#ifdef USE_ZLIB
+#include <zlib.h>
+#endif
 
-void getInfo(int n);
+#define EXPAND(tok) #tok
+#define STR(tok) EXPAND(tok)
 
-void serveError(char *errorcode, int n);
-void serveHTML(char *resource, int n);
-void serveCSS(char *resource, int n);
-void servePHP(char *resource, int n);
-void respond(int n);
+//misc.c
+int isElementOf(char *element, char **array, int length);
+
+// respond.c
+void respond(int newsockfd);
+
+// workers/text.c
+void serveHTML(char *resource, int newsockfd);
+void serveCSS(char *resource, int newsockfd);
+void servePHP(char *resource, int newsockfd);
+
+// workers/images.c
+void serveIMG(char *resource, char *ext, int newsockfd);
+
+// workers/json.c
+//char *serveJSON(char *resource, int newsockfd);
+
+// workers/error.c
+void serveError(int errorcode, int newsockfd);
+
+// extras/log.c
+//void logTransaction();

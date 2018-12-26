@@ -1,11 +1,39 @@
-src = $(wildcard src/*.c)
-obj = $(src:.c=.o)
+USE_PHP=1
+USE_ZLIB=0
+BASEDIR=.
 
-LDFLAGS = -O2
+CC=gcc
+LDFLAGS=-O2
 
-jankyserv: $(obj)
+ifeq ($(USE_ZLIB), 1)
+	LDFLAGS+=-lz
+endif
+
+jankyserv: error.o images.o text.o misc.o respond.o main.o
 	$(CC) -o $@ $^ $(LDFLAGS)
+
+misc.o:
+	$(CC) -o $@ -c src/misc.c
+
+respond.o: error.o images.o text.o
+	$(CC) -o $@ -c src/respond.c -D USE_PHP=$(USE_PHP)
+
+main.o: respond.o
+	$(CC) -o $@ -c src/main.c -D BASEDIR=$(BASEDIR)
+
+error.o:
+	$(CC) -o $@ -c src/workers/error.c
+
+images.o:
+	$(CC) -o $@ -c src/workers/images.c
+
+text.o:
+	$(CC) -o $@ -c src/workers/text.c
 
 .PHONY: clean
 clean:
-	rm -f $(obj)
+	rm -f *.o
+
+.PHONY: distclean
+distclean: clean
+	rm -f jankyserv

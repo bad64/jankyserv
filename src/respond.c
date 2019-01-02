@@ -58,60 +58,51 @@ void respond(int newsockfd)
 		{
 			printf("Found resource %s\n", &uri[1]);
 			
-			// Handling snowflake cases
-			if (strcmp(&uri[1], "info.php") == 0)
-			{
-				// getInfo(n);	// Bugged
-				serveError(500, newsockfd);
-			}
-			else
-			{
-				char *ext = strrchr(&uri[1], '.');
-				
-				char *html[] = { ".html", ".htm"};
-				char *img[] = { ".png", ".jpg", ".jpeg", ".gif", ".tiff" };
-				
-				// Do we need PHP ?
-				if (strcmp(ext, ".php") == 0)
-				{					
-					// Was the program compiled with support for PHP calls ?
-					if (USE_PHP == 1)
+			char *ext = strrchr(&uri[1], '.');
+			
+			char *html[] = { ".html", ".htm"};
+			char *img[] = { ".png", ".jpg", ".jpeg", ".gif", ".tiff" };
+			
+			// Do we need PHP ?
+			if (strcmp(ext, ".php") == 0)
+			{					
+				// Was the program compiled with support for PHP calls ?
+				if (USE_PHP == 1)
+				{
+					// Do we *have* PHP ?!
+					if ( access("/usr/bin/php-cgi", F_OK) != -1 )
 					{
-						// Do we *have* PHP ?!
-						if ( access("/usr/bin/php-cgi", F_OK) != -1 )
-						{
-							servePHP(&uri[1], method, args, newsockfd);
-						}
-						else
-						{
-							printf("Error: PHP appears to be missing from the host machine\n");
-							serveError(501, newsockfd);
-						}
+						servePHP(&uri[1], method, args, newsockfd);
 					}
 					else
 					{
-						printf("Error: PHP support has been disabled during compilation\n");
+						printf("Error: PHP appears to be missing from the host machine\n");
 						serveError(501, newsockfd);
 					}
 				}
 				else
 				{
-					if (strcmp(ext, ".css") == 0)
-					{
-						serveCSS(&uri[1], newsockfd);
-					}
-					else if (isElementOf(ext, html, 2))
-					{
-						serveHTML(&uri[1], newsockfd);
-					}
-					else if (isElementOf(ext, img, 5))
-					{
-						serveIMG(&uri[1], ext, newsockfd);
-					}
-					else
-					{
-						serveError(403, newsockfd);	// If we reach here, we can assume we don't have the rights to view that file... Though access() should report a permission error long before we get here anyway
-					}
+					printf("Error: PHP support has been disabled during compilation\n");
+					serveError(501, newsockfd);
+				}
+			}
+			else
+			{
+				if (strcmp(ext, ".css") == 0)
+				{
+					serveCSS(&uri[1], newsockfd);
+				}
+				else if (isElementOf(ext, html, 2))
+				{
+					serveHTML(&uri[1], newsockfd);
+				}
+				else if (isElementOf(ext, img, 5))
+				{
+					serveIMG(&uri[1], ext, newsockfd);
+				}
+				else
+				{
+					serveError(403, newsockfd);	// If we reach here, we can assume we don't have the rights to view that file... Though access() should report a permission error long before we get here anyway
 				}
 			}
 		}

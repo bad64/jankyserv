@@ -22,7 +22,7 @@
 #define EXPAND(tok) #tok
 #define STR(tok) EXPAND(tok)
 
-//misc.c
+// misc.c
 int isElementOf(char *element, char **array, int length);
 
 // respond.c
@@ -31,16 +31,16 @@ void respond(int newsockfd);
 // workers/text.c
 void serveHTML(char *resource, int newsockfd);
 void serveCSS(char *resource, int newsockfd);
-void servePHP(char *resource, int newsockfd);
+void servePHP(char *resource, char *method, char *args, int newsockfd);
 
 // workers/images.c
 void serveIMG(char *resource, char *ext, int newsockfd);
 
 // workers/json.c
-//char *serveJSON(char *resource, int newsockfd);
+// char *serveJSON(char *resource, int newsockfd);
 
 // workers/error.c
 void serveError(int errorcode, int newsockfd);
 
 // extras/log.c
-//void logTransaction();
+// void logTransaction();

@@ -2,7 +2,7 @@
 
 void serveIMG(char *resource, char *ext, int n)
 {	
-	//Get file info
+	// Get file info
 	FILE *file = fopen(resource, "rb");
 
 	struct stat st;
@@ -18,7 +18,7 @@ void serveIMG(char *resource, char *ext, int n)
 	
 	printf("Size of file is %d bytes", fsize);
 	
-	//Building response
+	// Building response
 	char *header;
 	if ( (strcmp(ext, ".jpeg") == 0) || (strcmp(ext, ".jpg") == 0) )
 	{
@@ -55,8 +55,8 @@ void serveIMG(char *resource, char *ext, int n)
 	strcat(response, header);
 	memcpy(response + strlen(header), buf, fsize);
 
-	//TODO: Response size error
-	printf("Writing response...");
+	// TODO: Response size error
+	printf("Writing response... ");
 	if ( write(n, response, strlen(response)) == 0)
 	{
 		perror("Could not write response to socket");
@@ -67,9 +67,13 @@ void serveIMG(char *resource, char *ext, int n)
 	}
 	
 	if (strlen(response) != (strlen(header) + fsize))
+	{
 		printf("Warning: there might be an issue with response size (%lu vs (%lu + %du + 1))\n", strlen(response), strlen(header), fsize);
+	}
 	
 	free(response);
 	free(header);
 	free(buf);
+	
+	printf("IMG: My work here is done...\n");
 }

@@ -8,12 +8,18 @@ It does not run on Windows *per se*, but you can run it from WSL if you insist. 
 
 At any rate, PHP is a soft(-ish) dependency. You can make it without PHP support (`USE_PHP=0`), in which case the server will spit out a 501 error page if you ask it to work on a .php file.
 
+# CHANGELOG: v0.11a
+
+- Various style consistency fixes (mostly adding brackets to if blocks)
+- Rewrote PHP worker for better memory management, resulting in a noticeable increase in speed
+- Added GET request support to the PHP worker
+
 # TODO
 
 What works:
 
 - Serving HTML/CSS
-- Serving PHP/CSS (slow and needs to be rewritten)
+- Serving PHP/CSS (only GET requests, POST is in the works)
 - Serving error pages (only 403, 404, 500 and 501 are implemented)
 
 What does not work yet:
@@ -24,11 +30,12 @@ What has not been tested:
 
 - All of the above on an actual Linux install (it's been mostly tested on WSL)
 
-What has not been implemented:
+What has not been implemented (more or less in order of when it should be implemented):
 
-- Logging
+- Image support
 - gzip response compression
 - JSON responses
+- Logging
 - Redirection
 - Decent multithreading support
-- Support for uploads
+- Upload support

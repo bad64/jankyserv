@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
@@ -31,7 +32,7 @@ void respond(int newsockfd);
 // workers/text.c
 void serveHTML(char *resource, int newsockfd);
 void serveCSS(char *resource, int newsockfd);
-void servePHP(char *resource, char *method, char *args, int newsockfd);
+void servePHP(char *resource, char* clientmessage, char *method, char *args, int newsockfd);
 
 // workers/images.c
 void serveIMG(char *resource, char *ext, int newsockfd);

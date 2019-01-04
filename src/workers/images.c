@@ -75,5 +75,5 @@ void serveIMG(char *resource, char *ext, int n)
 	free(header);
 	free(buf);
 	
-	printf("IMG: My work here is done...\n");
+	printf("IMG: My work here is done...\n\n");
 }

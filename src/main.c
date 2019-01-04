@@ -124,7 +124,7 @@ int main(int argc, char const *argv[])
 	
 	if (color == 1)
 	{
-		// Uglier ASCII banner
+		// Good ASCII banner
 		printf("\033[48;5;077m╔══════════════════════════════════════════════════════════════════════════════════════╗\n");
 		printf("\033[48;5;077m║                                                                                      ║\n");
 		printf("\033[48;5;220m║   ████████ ████████ ██    ██ ██   ▄██ ██    ██ ▄███████ ████████ ██████▄  ██    ██   ║\n");
@@ -134,13 +134,13 @@ int main(int argc, char const *argv[])
 		printf("\033[48;5;196m║        ███ ██    ██ ██  ████ ████▄       ██         ▀██ ██       ██▀██▄     ████     ║\n");
 		printf("\033[48;5;057m║   ██  ████ ██    ██ ██   ███ ██ ▀██▄     ██         ▄██ ██       ██  ▀██▄   ████     ║\n");
 		printf("\033[48;5;057m║   ████████ ██    ██ ██    ██ ██   ▀██    ██    ███████▀ ████████ ██    ██    ██      ║\n");
-		printf("\033[48;5;045m║                                                                               v0.11a ║\n");
+		printf("\033[48;5;045m║                                                                               v0.12a ║\n");
 		printf("\033[48;5;045m╚══════════════════════════════════════════════════════════════════════════════════════╝\n");
 		printf("\033[0m\n");
 	}
 	if (color == 2)
 	{
-		// Uglierer ASCII banner
+		// Bad ASCII banner
 		printf("\033[48;5;82m");
 		printf("\033[38;5;200m");
 		printf("╔══════════════════════════════════════════════════════════════════════════════════════╗\n");
@@ -152,7 +152,7 @@ int main(int argc, char const *argv[])
 		printf("║   ██    ██ ██ ██ ██ ██    ██ ████▄       ██         ▀██ ██       ██▀██▄     ████     ║\n");
 		printf("║   ██    ██ ███  ███ ██    ██ ██ ▀██▄     ██         ▄██ ██       ██  ▀██▄   ████     ║\n");
 		printf("║   ████████ ██    ██ ██    ██ ██   ▀██    ██    ███████▀ ████████ ██    ██    ██      ║\n");
-		printf("║                                                                               v0.11a ║\n");
+		printf("║                                                                               v0.12a ║\n");
 		printf("╚══════════════════════════════════════════════════════════════════════════════════════╝\n");
 		printf("\033[0m\n");
 	}
@@ -168,7 +168,7 @@ int main(int argc, char const *argv[])
 		printf("║        ███ ██    ██ ██  ████ ████▄       ██         ▀██ ██       ██▀██▄     ████     ║\n");
 		printf("║   ██  ████ ██    ██ ██   ███ ██ ▀██▄     ██         ▄██ ██       ██  ▀██▄   ████     ║\n");
 		printf("║   ████████ ██    ██ ██    ██ ██   ▀██    ██    ███████▀ ████████ ██    ██    ██      ║\n");
-		printf("║                                                                               v0.11a ║\n");
+		printf("║                                                                               v0.12a ║\n");
 		printf("╚══════════════════════════════════════════════════════════════════════════════════════╝\n");
 		printf("\n");
 	}
@@ -185,12 +185,20 @@ int main(int argc, char const *argv[])
 		newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);	// accept() blocks the program until a client connects
 		if (newsockfd < 0)
 		{
-			printf("Could not accept client connection from %s", inet_ntoa(cli_addr.sin_addr));
+			printf("Could not accept client connection from %s\n", inet_ntoa(cli_addr.sin_addr));
 		}
 		else
 		{
-			printf("=========================\n");
-			printf("Connection accepted from %s\n", inet_ntoa(cli_addr.sin_addr));
+			struct winsize size;
+			ioctl(STDOUT_FILENO,TIOCGWINSZ,&size);
+			int i;
+			for (i = 0; i < size.ws_col-1; i++)
+			{
+				printf("=");
+			}
+			printf("\n");
+			
+			printf("Connection accepted from %s\n\n", inet_ntoa(cli_addr.sin_addr));
 
 			if ( fork() == 0)
 			{
@@ -199,6 +207,7 @@ int main(int argc, char const *argv[])
 				if ( write(newsockfd, '\0', 1) != -1)
 					printf("WARNING: Socket did not close properly\n");
 				
+				printf("Connection with %s closed\n", inet_ntoa(cli_addr.sin_addr));
 				exit(0);
 			}
 		}

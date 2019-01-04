@@ -6,6 +6,9 @@ void respond(int newsockfd)
 	memset(clientmessage, '\0', USHRT_MAX * sizeof(char));
 	int msglen = recv(newsockfd, clientmessage, USHRT_MAX * sizeof(char), 0);
 	
+	char *copymsg = (char *)malloc(strlen(clientmessage) * sizeof(char));	// Copy of the client message to be butchered by strtok() later
+	strcpy(copymsg, clientmessage);
+	
 	if (msglen < 0)
 	{
 		printf("recv() error\n");
@@ -16,14 +19,14 @@ void respond(int newsockfd)
 	}
 	else
 	{
-		printf("Here is what they have to say: \n%s", clientmessage);
+		printf("Here is what they have to say: \n%s\n", clientmessage);
 			
-		char *method = strtok(clientmessage,  " \t\r\n");
+		char *method = strtok(copymsg,  " \t\r\n");
 		char *uri = strtok(NULL, " \t");
 		char *args;
 		char *protocol = strtok(NULL, " \t\r\n");
 		
-		if (strchr(uri, '?') != NULL)	// This (probably) means we have a GET request, hence we split it between the actual script name and its arguments
+		if (strchr(uri, '?') != NULL)	// This (ideally should) means we have a GET request, hence we split it between the actual script name and its arguments
 		{
 			char *tmp = strtok(uri, "?");
 			args = strtok(NULL, " \t");
@@ -33,11 +36,21 @@ void respond(int newsockfd)
 		{
 			args = NULL;
 		}
+		
+		if (strcmp(method, "POST") == 0)
+		{
+			printf("\n");
+		}
 				
 		if (strcmp(uri, "/") == 0)
 		{
-			uri = (char *)malloc(strlen("/index.php ") * sizeof(char));
-			strcpy(uri, "/index.php");
+			// This is temporarily hardcoded and will change whenever I get around to implement proper redirection
+			
+			printf("Redirect / to index.php\n");
+			if ( write(newsockfd, "HTTP/1.1 301 Moved Permanently\r\nLocation: /index.php\r\n\r\n", strlen("HTTP/1.1 301 Moved Permanently\r\nLocation: /index.php\r\n\r\n")) == 0)
+			{
+				serveError(500, newsockfd);
+			}
 		}
 		
 		// Look for our file in the folder
@@ -72,7 +85,7 @@ void respond(int newsockfd)
 					// Do we *have* PHP ?!
 					if ( access("/usr/bin/php-cgi", F_OK) != -1 )
 					{
-						servePHP(&uri[1], method, args, newsockfd);
+						servePHP(&uri[1], clientmessage, method, args, newsockfd);
 					}
 					else
 					{
@@ -108,6 +121,7 @@ void respond(int newsockfd)
 		}
 	}
 	
+	free(copymsg);
 	free(clientmessage);
 	close(newsockfd);
 }

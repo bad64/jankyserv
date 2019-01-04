@@ -5,7 +5,7 @@ void serveError(int errorcode, int newsockfd)
 	char *error;
 	if (errorcode == 403)
 	{
-		char *body = "<!DOCTYPE html><html style=\"background: black; color: green; text-align: center;\"><head><title>Error</title></head><body><h1>403 Forbidden</h1><hr><p>JankyServ v0.11a</p></body></html>";
+		char *body = "<!DOCTYPE html><html style=\"background: black; color: green; text-align: center;\"><head><title>Error</title></head><body><h1>403 Forbidden</h1><hr><p>JankyServ v0.12a</p></body></html>";
 		
 		char *size_s = (char *)malloc(strlen("65535") * sizeof(char));
 		memset(size_s, '\0', sizeof(size_s));							// Basically we're just converting the length of the body to an int
@@ -22,7 +22,7 @@ void serveError(int errorcode, int newsockfd)
 	}
 	else if (errorcode == 404)
 	{
-		char *body = "<!DOCTYPE html><html style=\"background: black; color: green; text-align: center;\"><head><title>Error</title></head><body><h1>404 Not Found</h1><hr><p>JankyServ v0.11a</p></body></html>";
+		char *body = "<!DOCTYPE html><html style=\"background: black; color: green; text-align: center;\"><head><title>Error</title></head><body><h1>404 Not Found</h1><hr><p>JankyServ v0.12a</p></body></html>";
 		
 		char *size_s = (char *)malloc(strlen("65535") * sizeof(char));
 		memset(size_s, '\0', sizeof(size_s));
@@ -39,7 +39,7 @@ void serveError(int errorcode, int newsockfd)
 	}
 	else if (errorcode == 418)
 	{
-		char *body = "<!DOCTYPE html><html style=\"background: black; color: green; text-align: center;\"><head><title>Error</title></head><body><h1>418 I'm A Teapot</h1><hr><p>JankyServ v0.11a</p></body></html>";
+		char *body = "<!DOCTYPE html><html style=\"background: black; color: green; text-align: center;\"><head><title>Error</title></head><body><h1>418 I'm A Teapot</h1><hr><p>JankyServ v0.12a</p></body></html>";
 		
 		char *size_s = (char *)malloc(strlen("65535") * sizeof(char));
 		memset(size_s, '\0', sizeof(size_s));
@@ -56,7 +56,7 @@ void serveError(int errorcode, int newsockfd)
 	}
 	else if (errorcode == 501)
 	{
-		char *body = "<!DOCTYPE html><html style=\"background: black; color: green; text-align: center;\"><head><title>Error</title></head><body><h1>501 Not Implemented</h1><hr><p>JankyServ v0.11a</p></body></html>";
+		char *body = "<!DOCTYPE html><html style=\"background: black; color: green; text-align: center;\"><head><title>Error</title></head><body><h1>501 Not Implemented</h1><hr><p>JankyServ v0.12a</p></body></html>";
 		
 		char *size_s = (char *)malloc(strlen("65535") * sizeof(char));
 		memset(size_s, '\0', sizeof(size_s));
@@ -73,7 +73,7 @@ void serveError(int errorcode, int newsockfd)
 	}
 	else	//Generic error
 	{
-		char *body = "<!DOCTYPE html><html style=\"background: black; color: green; text-align: center;\"><head><title>Error</title></head><body><h1>500 Internal Server Error</h1><hr><p>JankyServ v0.11a</p></body></html>";
+		char *body = "<!DOCTYPE html><html style=\"background: black; color: green; text-align: center;\"><head><title>Error</title></head><body><h1>500 Internal Server Error</h1><hr><p>JankyServ v0.12a</p></body></html>";
 		
 		char *size_s = (char *)malloc(strlen("65535") * sizeof(char));
 		memset(size_s, '\0', sizeof(size_s));

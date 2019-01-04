@@ -1,3 +1,15 @@
+╔══════════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                      ║
+║   ████████ ████████ ██    ██ ██   ▄██ ██    ██ ▄███████ ████████ ██████▄  ██    ██   ║
+║         ██ ██▀  ▀██ ███   ██ ██ ▄██▀  ▀██  ██▀ ██▀      ██       ██    ██ ██    ██   ║
+║         ██ ██    ██ ████  ██ ████▀     ▀████▀  ██▄      ██       ██    ██  ██  ██    ║
+║        ███ █████ ██ ██ ██ ██ ███        ▀██▀   ▀██████▄ ██████   ██████▀   ██  ██    ║
+║        ███ ██    ██ ██  ████ ████▄       ██         ▀██ ██       ██▀██▄     ████     ║
+║   ██  ████ ██    ██ ██   ███ ██ ▀██▄     ██         ▄██ ██       ██  ▀██▄   ████     ║
+║   ████████ ██    ██ ██    ██ ██   ▀██    ██    ███████▀ ████████ ██    ██    ██      ║
+║                                                                                      ║
+╚══════════════════════════════════════════════════════════════════════════════════════╝
+
 # A Truly Janky Server
 
 I wanted to discover the wonderful world of network programming. This is the resulting mistake.
@@ -8,34 +20,36 @@ It does not run on Windows *per se*, but you can run it from WSL if you insist. 
 
 At any rate, PHP is a soft(-ish) dependency. You can make it without PHP support (`USE_PHP=0`), in which case the server will spit out a 501 error page if you ask it to work on a .php file.
 
-# CHANGELOG: v0.11a
+# CHANGELOG: v0.12a
 
-- Various style consistency fixes (mostly adding brackets to if blocks)
-- Rewrote PHP worker for better memory management, resulting in a noticeable increase in speed
-- Added GET request support to the PHP worker
+- Hacked POST request support into the PHP worker (seriously it's *that* ugly)
+- Hardcoded redirection from / to index.php. Eventually this will be rewritten when I implement proper config-based redirection
 
 # TODO
 
 What works:
 
 - Serving HTML/CSS
-- Serving PHP/CSS (only GET requests, POST is in the works)
-- Serving error pages (only 403, 404, 500 and 501 are implemented)
+- Serving PHP/CSS
+- Serving error pages (only 403, 404, 418, 500 and 501 are implemented)
+- Redirecting (hardcoded)
 
 What does not work yet:
 
-- Serving basically anything that is not text
+- Serving basically anything that is not text (and JSON)
 
 What has not been tested:
 
-- All of the above on an actual Linux install (it's been mostly tested on WSL)
+- Nearly anything regarding security (to be fair if you're running this in anything other than a test intranet environment, you're about to be visited by a lot of dragons)
+- Simultaneous connections
 
 What has not been implemented (more or less in order of when it should be implemented):
 
 - Image support
-- gzip response compression
 - JSON responses
-- Logging
-- Redirection
-- Decent multithreading support
+- gzip response compression
 - Upload support
+- Logging
+- Unit tests
+- Redirection (using a definition file instead of hardcoding)
+- Decent multithreading support

@@ -2,7 +2,6 @@
 
 void serveHTML(char *resource, int newsockfd)
 {
-	printf("1 ");
 	// Get file info
 	FILE *html = fopen(resource, "r");
 

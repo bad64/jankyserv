@@ -34,6 +34,9 @@ void serveHTML(char *resource, int newsockfd);
 void serveCSS(char *resource, int newsockfd);
 void servePHP(char *resource, char* clientmessage, char *method, char *args, int newsockfd);
 
+// workers/file.c
+void serveOctetStream(char *resource, int newsockfd);
+
 // workers/images.c
 void serveIMG(char *resource, char *ext, int newsockfd);
 

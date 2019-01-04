@@ -115,7 +115,7 @@ void respond(int newsockfd)
 				}
 				else
 				{
-					serveError(403, newsockfd);	// If we reach here, we can assume we don't have the rights to view that file... Though access() should report a permission error long before we get here anyway
+					serveOctetStream(&uri[1], newsockfd);
 				}
 			}
 		}

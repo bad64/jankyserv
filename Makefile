@@ -10,13 +10,13 @@ ifeq ($(USE_ZLIB), 1)
 	LDFLAGS+=-lz
 endif
 
-jankyserv: error.o images.o text.o misc.o respond.o main.o
+jankyserv: error.o images.o text.o file.o misc.o respond.o main.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 misc.o:
 	$(CC) -o $@ -c src/misc.c
 
-respond.o: error.o images.o text.o
+respond.o: error.o images.o text.o file.o
 	$(CC) -o $@ -c src/respond.c -D USE_PHP=$(USE_PHP)
 
 main.o: respond.o
@@ -30,6 +30,9 @@ images.o:
 
 text.o:
 	$(CC) -o $@ -c src/workers/text.c
+
+file.o:
+	$(CC) -o $@ -c src/workers/file.c
 
 .PHONY: clean
 clean:

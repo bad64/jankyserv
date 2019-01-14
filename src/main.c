@@ -36,7 +36,7 @@ int main(int argc, char const *argv[])
 			switch (errno)
 			{
 				case ENOENT:
-					if (mkdir("html", 0755) != 0)
+					if (createDirectory("html") != 0)
 					{
 						perror("Cannot create html directory");
 						exit(1);
@@ -66,7 +66,7 @@ int main(int argc, char const *argv[])
 			{
 				char *errmsg;
 				case ENOENT:
-					if (mkdir(basedir, 0755) != 0)
+					if (createDirectory(basedir) != 0)
 					{
 						errmsg = (char *)malloc( (strlen("Cannot create server directory at ") + strlen(basedir)) * sizeof(char));
 						memset(errmsg, '\0', sizeof(errmsg));
@@ -205,27 +205,50 @@ int main(int argc, char const *argv[])
 		}
 		else
 		{
-			struct winsize size;
-			ioctl(STDOUT_FILENO,TIOCGWINSZ,&size);
-			int i;
-			for (i = 0; i < size.ws_col-1; i++)
-			{
-				printf("=");
-			}
+			#ifdef WIN32
+				CONSOLE_SCREEN_BUFFER_INFO info;
+				int cols;
+				
+				GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+				cols = info.srWindow.Right - info.srWindow.Left;
+				
+				int i;
+				for (i = 0; i < cols; i++)
+				{
+					printf("=");
+				}
+			#else
+				struct winsize window;
+				ioctl(STDOUT_FILENO,TIOCGWINSZ,&window);
+				int i;
+				for (i = 0; i < window.ws_col-1; i++)
+				{
+					printf("=");
+				}
+			#endif
 			printf("\n");
 			
 			printf("Connection accepted from %s\n\n", inet_ntoa(cli_addr.sin_addr));
 
-			if ( fork() == 0)
-			{
+			#if (defined(WIN32) || defined(WIN64))
 				respond(newsockfd);
 				
 				if ( write(newsockfd, '\0', 1) != -1)
 					printf("WARNING: Socket did not close properly\n");
 				
 				printf("Connection with %s closed\n", inet_ntoa(cli_addr.sin_addr));
-				exit(0);
-			}
+			#else
+				if ( fork() == 0)
+				{
+					respond(newsockfd);
+
+					if ( write(newsockfd, '\0', 1) != -1)
+						printf("WARNING: Socket did not close properly\n");
+
+					printf("Connection with %s closed\n", inet_ntoa(cli_addr.sin_addr));
+					exit(0);
+				}
+			#endif
 		}
 	}
 	

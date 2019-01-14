@@ -2,12 +2,10 @@
 
 void serveIMG(char *resource, char *ext, int n)
 {	
-	// Get file info
+	// Get file info	
 	FILE *file = fopen(resource, "rb");
-
-	struct stat st;
-	stat(resource, &st);
-	unsigned int fsize = st.st_size;
+	
+	unsigned int fsize = getFileSize(file);
 	
 	char *buf = (char *)calloc(fsize, sizeof(char));
 	fread(buf, fsize, 1, file);

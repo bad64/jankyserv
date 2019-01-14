@@ -5,12 +5,6 @@
 	#include <winsock2.h>
 	#include <windows.h>
 #else
-	#include <errno.h>
-	#include <limits.h>
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
-	#include <unistd.h>
 	#include <sys/ioctl.h>
 	#include <sys/stat.h>
 	#include <sys/types.h> 
@@ -26,6 +20,15 @@
     typedef struct in_addr IN_ADDR;
 #endif
 
+#include <errno.h>
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+enum color { RED, GREEN, BLUE, YELLOW };
+
 //Compile-time options
 #ifndef USE_PHP
 #define USE_PHP 1
@@ -39,7 +42,10 @@
 #define STR(tok) EXPAND(tok)
 
 // misc.c
+void printColor(int color, char *str);
 int isElementOf(char *element, char **array, int length);
+unsigned int getFileSize(FILE *file);
+int createDirectory(char *path);
 
 // respond.c
 void respond(int newsockfd);

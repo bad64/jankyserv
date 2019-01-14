@@ -5,9 +5,7 @@ void serveOctetStream(char *resource, int newsockfd)
 	// Get file info
 	FILE *file = fopen(resource, "r");
 
-	struct stat st;
-	stat(resource, &st);
-	unsigned int fsize = st.st_size;
+	unsigned int fsize = getFileSize(file);
 	
 	char *buf = (char *)calloc(fsize, sizeof(char));
 	fread(buf, fsize, 1, file);

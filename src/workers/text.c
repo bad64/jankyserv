@@ -5,9 +5,7 @@ void serveHTML(char *resource, int newsockfd)
 	// Get file info
 	FILE *html = fopen(resource, "r");
 
-	struct stat st;
-	stat(resource, &st);
-	unsigned int fsize = st.st_size;
+	unsigned int fsize = getFileSize(html);
 	
 	char *buf = (char *)calloc(fsize, sizeof(char));
 	fread(buf, fsize, 1, html);
@@ -57,9 +55,7 @@ void serveCSS(char *resource, int newsockfd)
 	// Get file info
 	FILE *css = fopen(resource, "r");
 
-	struct stat st;
-	stat(resource, &st);
-	unsigned int fsize = st.st_size;
+	unsigned int fsize = getFileSize(css);
 	
 	char *buf = (char *)calloc(fsize, sizeof(char));
 	fread(buf, fsize, 1, css);

@@ -1,15 +1,30 @@
-#include <errno.h>
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <sys/stat.h>
-#include <sys/types.h> 
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
+#ifndef INCLUDES_H
+#define INCLUDES_H
+
+#if (defined (_WIN32) || defined (_WIN64))
+	#include <winsock2.h>
+	#include <windows.h>
+#else
+	#include <errno.h>
+	#include <limits.h>
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include <unistd.h>
+	#include <sys/ioctl.h>
+	#include <sys/stat.h>
+	#include <sys/types.h> 
+	#include <sys/socket.h>
+	#include <arpa/inet.h>
+	#include <netinet/in.h>
+
+	#define closesocket(s) close(s)
+
+    typedef int SOCKET;
+    typedef struct sockaddr_in SOCKADDR_IN;
+    typedef struct sockaddr SOCKADDR;
+    typedef struct in_addr IN_ADDR;
+#endif
 
 //Compile-time options
 #ifndef USE_PHP
@@ -48,3 +63,5 @@ void serveError(int errorcode, int newsockfd);
 
 // extras/log.c
 // void logTransaction();
+
+#endif

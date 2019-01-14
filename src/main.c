@@ -9,6 +9,18 @@ int main(int argc, char const *argv[])
 		 exit(1);
     }
 	
+	#ifdef WIN32
+		// Calling up Winsock DLL
+		WSADATA wsaData;
+		
+		if (WSAStartup(MAKEWORD(2,0), &wsaData) != 0)
+		{
+			printColor(RED, "ERROR: ");
+			perror("WSAStartup failed");
+			exit(1);
+		}
+	#endif
+	
 	// Check if a base directory has been configured during compilation
 	#ifndef BASEDIR
 		#define BASEDIR .
@@ -116,8 +128,12 @@ int main(int argc, char const *argv[])
 	
 	int color;
 	
-	#ifdef DIFFERENT
-		color = atoi(STR(DIFFERENT));
+	#ifndef WIN32
+		#ifdef DIFFERENT
+			color = atoi(STR(DIFFERENT));
+		#else
+			color = 0;
+		#endif
 	#else
 		color = 0;
 	#endif

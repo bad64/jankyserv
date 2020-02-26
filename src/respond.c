@@ -2,6 +2,10 @@
 
 void respond(int newsockfd)
 {
+	clock_t begin, end;
+	double elapsed;
+	begin = clock();
+	
 	char *clientmessage = (char *)malloc(USHRT_MAX * sizeof(char));
 	memset(clientmessage, '\0', USHRT_MAX * sizeof(char));
 	int msglen = recv(newsockfd, clientmessage, USHRT_MAX * sizeof(char), 0);
@@ -120,6 +124,11 @@ void respond(int newsockfd)
 			}
 		}
 	}
+	
+	end = clock();
+	elapsed = (double)(end - begin) / CLOCKS_PER_SEC;
+	
+	printf("Request served in %.2f seconds\n", elapsed);
 	
 	free(copymsg);
 	free(clientmessage);

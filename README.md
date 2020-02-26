@@ -1,4 +1,6 @@
-# A Truly Janky Server
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+ # A Truly Janky Server
 
 I wanted to discover the wonderful world of network programming. This is the resulting mistake.
 
